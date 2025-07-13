@@ -1,42 +1,52 @@
+/* 1. Bring in Bootstrap’s compiled CSS */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+/* 2. Global overrides: fonts, colors, spacing */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+  /* Font */
+  --bs-body-font-family: 'Poppins', sans-serif;
+  /* Brand colors */
+  --bs-primary:      #1d4ed8;
+  --bs-primary-rgb:  29,78,216;
+  --bs-secondary:    #6b7280;
+  --bs-success:      #10b981;
+  --bs-info:         #0ea5e9;
+  --bs-warning:      #f59e0b;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: var(--bs-body-font-family);
+  background-color: #f8f9fa;
+  color: #212529;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+/* make all form-control placeholders use the muted color */
+.form-control::placeholder {
+  color: #c3c6c9;   /* Bootstrap’s $gray-600 / text-muted color */
+  opacity: 1;       /* ensure full opacity */
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+/* translucent gray backdrop over the full viewport */
+.signup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(248, 249, 250, 0.8);  /* bootstrap’s gray-50 at 80% opacity */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+/* translucent white form panel with a slight blur */
+.signup-panel {
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(5px);
+  border-radius: 0.5rem;
+  padding: 2rem;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
 }
