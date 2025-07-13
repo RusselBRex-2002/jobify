@@ -50,8 +50,8 @@ export default function Testimonials() {
   const [current, setCurrent] = useState(0)
   const total = testimonials.length
 
-  const prev = () => setCurrent((idx) => (idx - 1 + total) % total)
-  const next = () => setCurrent((idx) => (idx + 1) % total)
+  const prev = () => setCurrent(idx => (idx - 1 + total) % total)
+  const next = () => setCurrent(idx => (idx + 1) % total)
 
   const { name, role, avatar, content } = testimonials[current]
 
@@ -80,7 +80,9 @@ export default function Testimonials() {
               <small className="text-muted">{role}</small>
             </div>
           </div>
-          <p className="fst-italic text-muted">"{content}"</p>
+
+          {/* Escaped quotes to satisfy react/no-unescaped-entities */}
+          <p className="fst-italic text-muted">&ldquo;{content}&rdquo;</p>
         </div>
 
         <button

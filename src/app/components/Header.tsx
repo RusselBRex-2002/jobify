@@ -4,8 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../components/AuthProvider'
-import { loginWithGoogle, logout, db } from '../../../lib/firebaseClient'
-import { doc, getDoc } from 'firebase/firestore'
+import { logout } from '../../../lib/firebaseClient'
 
 export default function Header() {
   const { user } = useAuth()
