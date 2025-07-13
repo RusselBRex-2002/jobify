@@ -4,6 +4,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { FirebaseError } from 'firebase/app'
 import { auth, loginWithGoogle, db } from '../../../lib/firebaseClient'
 import { doc, getDoc } from 'firebase/firestore'
 import { signInWithEmailAndPassword } from 'firebase/auth'
@@ -29,20 +30,26 @@ export default function LoginPage() {
         trimmed,
         password
       )
+
       const snap = await getDoc(doc(db, 'users', cred.user.uid))
       router.push(snap.exists() ? '/' : '/signup')
-    } catch (err: any) {
+
+    } catch (err: unknown) {
       console.error('Login error:', err)
-      switch (err.code) {
-        case 'auth/user-not-found':
-          setError('No account found. Please sign up first.')
-          break
-        case 'auth/wrong-password':
-          setError('Incorrect password. Please try again.')
-          break
-        default:
-          setError('Login failed. Please try again.')
+      let message = 'Login failed. Please try again.'
+
+      if (err instanceof FirebaseError) {
+        switch (err.code) {
+          case 'auth/user-not-found':
+            message = 'No account found. Please sign up first.'
+            break
+          case 'auth/wrong-password':
+            message = 'Incorrect password. Please try again.'
+            break
+        }
       }
+
+      setError(message)
     } finally {
       setLoadingEmail(false)
     }
@@ -55,11 +62,19 @@ export default function LoginPage() {
     try {
       const result = await loginWithGoogle()
       const uid = result.user.uid
+
       const snap = await getDoc(doc(db, 'users', uid))
       router.push(snap.exists() ? '/' : '/signup')
-    } catch (err) {
+
+    } catch (err: unknown) {
       console.error('Google sign-in error:', err)
-      setError('Google sign-in failed. Please try again.')
+      let message = 'Google sign-in failed. Please try again.'
+
+      if (err instanceof FirebaseError && err.code === 'auth/popup-closed-by-user') {
+        message = 'Google sign-in was cancelled.'
+      }
+
+      setError(message)
     } finally {
       setLoadingGoogle(false)
     }
