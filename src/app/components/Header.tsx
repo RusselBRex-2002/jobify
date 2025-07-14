@@ -1,53 +1,53 @@
+// app/components/Header.tsx
 'use client'
 
-import React, { useState } from 'react'
-import Link from 'next/link'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { useAuth } from '../components/AuthProvider'
 import { logout } from '../../../lib/firebaseClient'
 
 export default function Header() {
   const { user } = useAuth()
   const router = useRouter()
+
+  const [navOpen, setNavOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [query, setQuery] = useState('')
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (query.trim()) {
-      router.push(`/search?q=${encodeURIComponent(query.trim())}`)
-      setQuery('')
+  useEffect(() => {
+    const onResize = () => {
+      if (window.innerWidth >= 992 && navOpen) {
+        setNavOpen(false)
+      }
     }
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [navOpen])
+
+  const toggleNav = () => setNavOpen(o => !o)
+  const navigate = (href: string) => {
+    setNavOpen(false)
+    router.push(href)
   }
 
-  const handleGetStarted = async () => {
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!query.trim()) return
+    navigate(`/search?q=${encodeURIComponent(query.trim())}`)
+    setQuery('')
+  }
+
+  const handleAuth = () => {
     setLoading(true)
-    try {
-      // // 1. Sign in with Google
-      // const result = await loginWithGoogle()
-      // const uid = result.user.uid
-
-      // // 2. Check Firestore for an existing user profile
-      // const userRef = doc(db, 'users', uid)
-      // const snap = await getDoc(userRef)
-
-      // if (snap.exists()) {
-      //   // existing user → go home or dashboard
-      //   router.push('/')
-      // } else {
-      //   // new user → collect extra info
-        router.push('/login')
-      // }
-    } catch (err) {
-      console.error('Auth error:', err)
-    } finally {
-      setLoading(false)
-    }
+    navigate('/login')
+    setLoading(false)
   }
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light sticky-top shadow-sm">
       <div className="container">
+
         <Link href="/" className="navbar-brand">
           Jobify
         </Link>
@@ -55,17 +55,15 @@ export default function Header() {
         <button
           className="navbar-toggler"
           type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#mainNav"
-          aria-controls="mainNav"
-          aria-expanded="false"
           aria-label="Toggle navigation"
+          aria-expanded={navOpen}
+          onClick={toggleNav}
         >
           <span className="navbar-toggler-icon" />
         </button>
 
-        <div className="collapse navbar-collapse" id="mainNav">
-          {/* Nav links */}
+        <div className={`collapse navbar-collapse${navOpen ? ' show' : ''}`}>
+          {/* Left nav */}
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             {[
               ['/', 'Home'],
@@ -79,55 +77,51 @@ export default function Header() {
               ['/faqs', 'FAQs'],
             ].map(([href, label]) => (
               <li className="nav-item" key={href}>
-                <Link href={href} className="nav-link">
+                <a className="nav-link" onClick={() => navigate(href)}>
                   {label}
-                </Link>
+                </a>
               </li>
             ))}
           </ul>
 
-          {/* Search form */}
-          <form
-            onSubmit={onSubmit}
-            className="d-flex me-3"
-            role="search"
-          >
-            <input
-              type="search"
-              className="form-control form-control-sm me-2"
-              placeholder="Search courses, jobs…"
-              aria-label="Search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-            <button
-              type="submit"
-              className="btn btn-outline-primary"
-              disabled={!query.trim()}
-            >
-              Search
-            </button>
-          </form>
+          {/* Right: responsive search + auth */}
+          <div className="d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center ms-auto gap-3">
 
-          {/* Auth buttons */}
-          <div className="d-flex align-items-center">
+            {/* Search */}
+            <form onSubmit={onSubmit} className="d-flex w-100 w-lg-auto" role="search">
+              <input
+                type="search"
+                className="form-control form-control-sm"
+                placeholder="Search courses, jobs…"
+                aria-label="Search"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+              />
+              <button
+                type="submit"
+                disabled={!query.trim()}
+                className="btn btn-outline-primary btn-md ms-2 flex-shrink-0 px-lg-3 py-lg-1"
+              >
+                Search
+              </button>
+            </form>
+
+            {/* Log In / Out */}
             {user ? (
-              <>
-                <span className="navbar-text me-3 text-dark">
-                  {user.displayName}
-                </span>
-                <button
-                  onClick={() => logout()}
-                  className="btn btn-outline-primary btn-md"
-                >
-                  Log Out
-                </button>
-              </>
+              <button
+                onClick={() => {
+                  logout()
+                  setNavOpen(false)
+                }}
+                className="btn btn-outline-primary btn-md flex-shrink-0 px-3 py-1"
+              >
+                Log Out
+              </button>
             ) : (
               <button
-                onClick={handleGetStarted}
-                className="btn btn-primary btn-md"
+                onClick={handleAuth}
                 disabled={loading}
+                className="btn btn-primary btn-md flex-shrink-0 px-3 py-1"
               >
                 {loading ? 'Please wait…' : 'Log In'}
               </button>
