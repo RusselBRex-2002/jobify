@@ -100,7 +100,7 @@ export default function Header() {
               <button
                 type="submit"
                 disabled={!query.trim()}
-                className="btn btn-outline-primary btn-md ms-2 flex-shrink-0 px-lg-3 py-lg-1"
+                className="btn btn-outline-primary btn-md ms-2 flex-shrink-0 px-lg-3 py-lg-2"
               >
                 Search
               </button>
@@ -113,7 +113,7 @@ export default function Header() {
                   logout()
                   setNavOpen(false)
                 }}
-                className="btn btn-outline-primary btn-md flex-shrink-0 px-3 py-1"
+                className="btn btn-outline-primary btn-md flex-shrink-0 px-3 py-2"
               >
                 Log Out
               </button>
@@ -121,7 +121,7 @@ export default function Header() {
               <button
                 onClick={handleAuth}
                 disabled={loading}
-                className="btn btn-primary btn-md flex-shrink-0 px-3 py-1"
+                className="btn btn-primary btn-md flex-shrink-0 px-3 py-2"
               >
                 {loading ? 'Please wait…' : 'Log In'}
               </button>
