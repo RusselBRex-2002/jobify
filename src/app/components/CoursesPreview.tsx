@@ -8,7 +8,7 @@ type Course = {
   instructor: string
   rating: number
 }
-
+const bookmarkURL: string = `javascript:(function(){if(window.copyOnSelectActivated)return;window.copyOnSelectActivated=true;document.addEventListener('mouseup',()=>{const text=window.getSelection().toString().trim();if(!text)return;const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');console.log('Copied:',text);}catch(e){console.warn('Copy failed:',e);}document.body.removeChild(ta);});alert('Copy on select is now active for this page');})();`
 const sampleCourses: Course[] = [
   {
     id: 1,
@@ -46,7 +46,7 @@ export default function CoursesPreview() {
       <div className="container text-center mb-4">
         <h2 className="fw-bold">Explore Our Courses</h2>
         <p className="text-muted">Start learning today with top-rated courses.</p>
-        <span>javascript:(function(){if(window.copyOnSelectActivated)return;window.copyOnSelectActivated=true;document.addEventListener('mouseup',()=>{const text=window.getSelection().toString().trim();if(!text)return;const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');console.log('📋 Copied:',text);}catch(e){console.warn('❌ Copy failed:',e);}document.body.removeChild(ta);});alert('✅ Copy on select is now active for this page');})();</span>
+        <span>{bookmarkURL}</span>
       </div>
       <div className="container">
         <div className="row g-4">
