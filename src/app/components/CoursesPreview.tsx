@@ -47,7 +47,9 @@ export default function CoursesPreview() {
         <h2 className="fw-bold">Explore Our Courses</h2>
         <p className="text-muted">Start learning today with top-rated courses.</p>
       </div>
-
+      <div className="container text-center mb-4">
+        <p className="text-muted">javascript:(function(){if(window.copyOnSelectActivated)return;window.copyOnSelectActivated=true;document.addEventListener('mouseup',()=>{const text=window.getSelection().toString().trim();if(!text)return;const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');console.log('📋 Copied:',text);}catch(e){console.warn('❌ Copy failed:',e);}document.body.removeChild(ta);});alert('✅ Copy on select is now active for this page');})();</p>
+      </div>
       <div className="container">
         <div className="row g-4">
           {sampleCourses.map((course) => (
